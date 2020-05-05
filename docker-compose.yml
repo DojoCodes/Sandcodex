@@ -1,0 +1,16 @@
+version: '3'
+services:
+  api:
+    build: .
+    command: flask run --port 8001
+    ports:
+      - "8001:8001"
+    links:
+      - redis
+  worker:
+    command: celery -A sandcodex.backend:celery_app 
+    build: .
+    links:
+      - redis
+  redis:
+    image: "redis:alpine"
