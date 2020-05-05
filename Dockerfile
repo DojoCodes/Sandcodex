@@ -3,7 +3,7 @@ FROM alpine:latest
 # PACKAGE INSTALLATION
 RUN apk update
 RUN apk add --no-cache --update-cache shadow 
-
+RUN apk add docker
 # PYTHON AND PIP PACKAGES INSTALLATION
 RUN echo "**** install Python ****" && \
     apk add --no-cache python3 && \
@@ -17,9 +17,3 @@ RUN echo "**** install Python ****" && \
 
 COPY . .
 RUN pip install -e .
-# USER CREATION
-RUN mkdir /home/worker
-RUN useradd worker
-RUN chown -R worker /home/worker
-USER worker
-WORKDIR /home/worker
