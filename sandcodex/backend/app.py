@@ -1,11 +1,12 @@
-from celery import Celery
 from celery.exceptions import Ignore, SoftTimeLimitExceeded
-from sandcodex.utils import text_to_tar_stream 
-from sandcodex.docker import Worker
+from sandcodex.backend.utils import text_to_tar_stream 
+from sandcodex.backend.worker import Worker
 from typing import List
+from celery import Celery
 import docker
 
 celery = Celery("sandcodex")
+
 docker_client = docker.from_env()
 python_worker = Worker(
     client=docker_client,

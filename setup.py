@@ -3,7 +3,7 @@ from setuptools import setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-requires = ["docker>4", "celery>4", "redis>3"]
+requires = ["docker>4", "celery>4", "redis>3", "flask>1"]
 
 tests_require = ["pytest", "pycov"]
 

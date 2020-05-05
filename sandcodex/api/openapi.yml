@@ -1,0 +1,123 @@
+openapi: "3.0.0"
+
+
+info:
+  version: 0.1.0
+  title: SandCodex task
+  license:
+    name: MIT
+
+
+servers:
+  - url: https://api.sandcodex.ted.mk/v0
+
+
+paths:
+  /tasks:
+    post:
+      x-openapi-router-controller: sandcodex.api.tasks
+      operationId: post_tasks
+      summary: Submit a task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '202':
+          description: the task has been accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /tasks/{task_id}:
+    get:
+      x-openapi-router-controller: sandcodex.api.tasks
+      operationId: get_tasks
+      summary: Info for a specific task
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: The id of the task
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+components:
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - status
+        - interpreter
+        - results
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        interpreter:
+          type: string
+        code:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        results:
+          type: array
+          items:
+            type: string
+
+    TaskRequest:
+      type: object
+      required:
+        - interpreter
+        - code
+        - parameters
+      properties:
+        interpreter:
+          type: string
+        code:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            type:
+              type: string
+            message:
+              type: string

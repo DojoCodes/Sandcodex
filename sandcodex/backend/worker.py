@@ -1,5 +1,6 @@
 import docker
-from sandcodex.utils import text_to_tar_stream
+from sandcodex.backend.utils import text_to_tar_stream
+
 
 class Worker:
     
@@ -29,7 +30,7 @@ class Container:
         self.container.put_archive(
             path=f"/home/worker", data=tar_stream
         )
-        return_code, stream = self.container.exec_run(command, stream=True)
+        _, stream = self.container.exec_run(command, stream=True)
         ret = ""
         for line in stream:
             if isinstance(line, bytes):
