@@ -36,6 +36,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+      security:
+          - api_key: []
 
   /tasks/{task_id}:
     get:
@@ -62,6 +64,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+
   /interpreters:
     get:
       x-openapi-router-controller: sandcodex.api.interpreters
@@ -80,8 +85,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
 
 components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-Auth
+      in: header
+      x-apikeyInfoFunc: sandcodex.api.security.apikey_auth
   schemas:
     Task:
       type: object
