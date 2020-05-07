@@ -3,7 +3,7 @@ from setuptools import setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-requires = ["docker>4", "celery>4", "redis>3", "flask>1", "connexion", "swagger_ui_bundle"]
+requires = ["docker>4", "celery>4", "redis>3", "flask>1", "connexion", "swagger_ui_bundle", "requests"]
 
 tests_require = ["pytest", "pycov"]
 

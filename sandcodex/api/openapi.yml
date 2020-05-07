@@ -2,8 +2,8 @@ openapi: "3.0.0"
 
 
 info:
-  version: 0.1.0
-  title: SandCodex task
+  version: 0.1.1
+  title: Sandcodex
   license:
     name: MIT
 
@@ -72,6 +72,8 @@ components:
         - id
         - status
         - interpreter
+        - code
+        - parameters
         - results
       properties:
         id:
@@ -87,6 +89,13 @@ components:
           items:
             type: array
             items:
+              type: string
+        callback:
+          type: object
+          properties:
+            url:
+              type: string
+            bearer:
               type: string
         results:
           type: array
@@ -110,14 +119,27 @@ components:
             type: array
             items:
               type: string
+        callback:
+          type: object
+          properties:
+            url:
+              type: string
+            bearer:
+              type: string
 
     Error:
       type: object
+      required:
+        - message
+        - status
+        - title
+        - type
       properties:
-        error:
-          type: object
-          properties:
-            type:
-              type: string
-            message:
-              type: string
+        message:
+          type: string
+        status:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
