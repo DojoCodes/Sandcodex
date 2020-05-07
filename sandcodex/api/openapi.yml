@@ -62,7 +62,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
+  /interpreters:
+    get:
+      x-openapi-router-controller: sandcodex.api.interpreters
+      operationId: list_interpreters
+      summary: Get interpreters list
+      responses:
+        '200':
+          description: Expected response for interpreters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterpreterList"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   schemas:
@@ -126,6 +143,14 @@ components:
               type: string
             bearer:
               type: string
+
+    InterpreterList:
+      type: object
+      properties:
+        interpreters:
+          type: array
+          items:
+            type: string
 
     Error:
       type: object
