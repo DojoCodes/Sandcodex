@@ -9,22 +9,21 @@
 git clone https://github.com/DojoCodes/Sandcodex.git
 cd Sandcodex
 ```
+- Build the worker image (only python for now):
+```bash
+docker build -t sandcodex_worker_python worker_images/python
+```
 - Build the stack running the following command
 ```bash
 docker-compose up -d
 ```
 
-> If you want to restart the stask use
-> ```bash
-> docker-compose up -d --force-recreate
-> ```
+If you want to restart the stask use
+```bash
+docker-compose up -d --force-recreate
+```
 
-> If you want to see the logs use
-> ```bash
-> docker-compose logs
-> ```
-
-> If you want to scale the number of workers
-> ```bash
-> docker-compose up -d --scale worker=3
-> ```
+If you want to see the logs
+```bash
+docker-compose logs
+```
