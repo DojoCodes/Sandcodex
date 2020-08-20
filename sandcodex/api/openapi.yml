@@ -103,7 +103,6 @@ components:
         - status
         - interpreter
         - code
-        - parameters
         - results
       properties:
         id:
@@ -114,12 +113,15 @@ components:
           type: string
         code:
           type: string
-        parameters:
+        inputs:
           type: array
           items:
-            type: array
-            items:
-              type: string
+            type: object
+            properties:
+              parameters:
+                type: string
+              stdin:
+                type: string
         callback:
           type: object
           properties:
@@ -137,18 +139,21 @@ components:
       required:
         - interpreter
         - code
-        - parameters
+        - inputs
       properties:
         interpreter:
           type: string
         code:
           type: string
-        parameters:
+        inputs:
           type: array
           items:
-            type: array
-            items:
-              type: string
+            type: object
+            properties:
+              parameters:
+                type: string
+              stdin:
+                type: string
         callback:
           type: object
           properties:

@@ -3,7 +3,7 @@ from sandcodex.backend.utils import text_to_tar_stream
 
 
 class Worker:
-    
+
     def __init__(self, client: docker.client.DockerClient, image: str, command: str):
         self.client = client
         self.image = image
@@ -13,16 +13,16 @@ class Worker:
         return Container(self.client, self.image, self.command)
 
 class Container:
-    
+
     def __init__(self, client: docker.client.DockerClient, image: str, command: str):
         self.client = client
         self.image = image
         self.command = command
         self.container = self.client.containers.run(
-            image=self.image, detach=True, network_mode="none"
+            image=self.image, detach=True, network_mode="none", stdin_open=True
         )
-    
-    def exec(self, code, parameters):
+
+    def exec(self, code, parameters, input_):
         command = self.command.format(
             parameters=" ".join(parameters)
         )
@@ -30,11 +30,13 @@ class Container:
         self.container.put_archive(
             path=f"/home/worker", data=tar_stream
         )
-        _, stream = self.container.exec_run(command, stream=True)
+        _, stream = self.container.exec_run(command, socket=True, stdin=True, stdout=True, stderr=True)
         ret = ""
-        for line in stream:
-            if isinstance(line, bytes):
-                ret += line.decode()
+        stream._sock.send(input_.encode('utf8'))
+        while True:
+            data = stream._sock.recv(1024)
+            if not data: break
+            ret += data[8:].decode('utf8')
         return ret
 
     @property

@@ -1,8 +1,8 @@
-from celery.exceptions import Ignore, SoftTimeLimitExceeded
+from celery.exceptions import Terminated, SoftTimeLimitExceeded
 from sandcodex.backend.utils import text_to_tar_stream 
 from sandcodex.backend.worker import Worker
 from sandcodex.backend.config import interpreters
-from typing import List
+from typing import List, Dict, Any
 from celery.utils.log import get_task_logger
 from celery import Celery
 import docker
@@ -31,14 +31,14 @@ def update_status(task, state, result, callback):
 
 
 @celery.task(bind=True, soft_time_limit=10, time_limit=15)
-def get_result(self, interpreter: str, code: str, parameters: List[List[str]], callback: dict):
+def get_result(self, interpreter: str, code: str, inputs: List[Dict[str, Any]], callback: dict):
     container = None
     result = {
         "id": self.request.id,
         "status": "",
         "interpreter": interpreter,
         "code": code,
-        "parameters": parameters,
+        "inputs": inputs,
         "results": None
     }
     try:
@@ -50,17 +50,17 @@ def get_result(self, interpreter: str, code: str, parameters: List[List[str]], c
         worker = workers[interpreter]
         container = worker.new_container()
         results = []
-        for parameter in parameters:
-            results.append(container.exec(code, parameter))
+        for input_ in inputs:
+            results.append(container.exec(code, input_.get("parameters", []), input_.get("stdin", "")))
         result["results"] = results
         update_status(self, state="SUCCESS", result=result, callback=callback)
         return result
-    except SoftTimeLimitExceeded:
+    except SoftTimeLimitExceeded as e:
         update_status(self, state="TIMEOUT", result=result, callback=callback)
-        raise Ignore()
+        raise SoftTimeLimitExceeded(str(e)) from e
     except:
         update_status(self, state="FAILURE", result=result, callback=callback)
-        raise Ignore()
+        raise Terminated()
     finally:
         if hasattr(container, "up"):
             if container.up:

@@ -1,6 +1,7 @@
 from sandcodex.backend.app import get_result
 from celery.result import AsyncResult
 
+
 def get_tasks(task_id):
     task = AsyncResult(task_id)
     result = task.result
@@ -19,13 +20,13 @@ def post_tasks(body):
     task = get_result.delay(
         interpreter=body.get('interpreter'),
         code=body.get('code'),
-        parameters=body.get('parameters'),
+        inputs=body.get("inputs", []),
         callback=body.get('callback', None))
     return {
         "id": task.id,
         "status": task.state,
         "interpreter": "python",
         "code": body['code'],
-        "parameters": body['parameters'],
+        "inputs": body.get("inputs", []),
         "results": []
     }, 202
