@@ -118,6 +118,8 @@ components:
           items:
             type: object
             properties:
+              id:
+                type: string
               parameters:
                 type: string
               stdin:

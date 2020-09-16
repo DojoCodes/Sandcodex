@@ -50,7 +50,10 @@ def get_result(self, interpreter: str, code: str, inputs: List[Dict[str, Any]], 
         container = worker.new_container()
         results = []
         for input_ in inputs:
-            results.append(container.exec(code, input_.get("parameters", []), input_.get("stdin", "")))
+            results.append({
+                "return": container.exec(code, input_.get("parameters", []), input_.get("stdin", "")),
+                "id": input_.get("id", ""),
+            })
         result["results"] = results
         update_status(self, state="SUCCESS", result=result, callback=callback)
         return result
