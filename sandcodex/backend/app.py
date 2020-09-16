@@ -12,10 +12,9 @@ logger = get_task_logger(__name__)
 
 celery = Celery("sandcodex")
 
-docker_client = docker.from_env()
+
 workers = {
     name : Worker(
-        client=docker_client,
         image=data["image"],
         command=data["command"],
     )

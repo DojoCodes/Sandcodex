@@ -4,13 +4,20 @@ from sandcodex.backend.utils import text_to_tar_stream
 
 class Worker:
 
-    def __init__(self, client: docker.client.DockerClient, image: str, command: str):
-        self.client = client
+    def __init__(self, image: str, command: str, client: docker.client.DockerClient = None):
+        self._client = client
         self.image = image
         self.command = command
 
     def new_container(self):
         return Container(self.client, self.image, self.command)
+
+    @property
+    def client(self):
+        if not self._client:
+            self._client = docker.from_env()
+        return self._client
+
 
 class Container:
 
