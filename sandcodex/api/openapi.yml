@@ -134,7 +134,12 @@ components:
         results:
           type: array
           items:
-            type: string
+            type: object
+            properties:
+              id:
+                type: string
+              return:
+                type: string
 
     TaskRequest:
       type: object
@@ -152,6 +157,8 @@ components:
           items:
             type: object
             properties:
+              id:
+                type: string
               parameters:
                 type: string
               stdin:
