@@ -121,7 +121,9 @@ components:
               id:
                 type: string
               parameters:
-                type: string
+                type: array
+                items:
+                  type: string
               stdin:
                 type: string
         callback:
@@ -163,6 +165,8 @@ components:
                 type: string
               parameters:
                 type: array
+                items:
+                  type: string
               stdin:
                 type: string
         callback:
