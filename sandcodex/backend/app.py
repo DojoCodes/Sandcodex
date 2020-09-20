@@ -51,7 +51,7 @@ def get_result(self, interpreter: str, code: str, inputs: List[Dict[str, Any]], 
         results = []
         for input_ in inputs:
             results.append({
-                "return": container.exec(code, input_.get("parameters", []), input_.get("stdin", "")),
+                "output": container.exec(code, input_.get("parameters", []), input_.get("stdin", "")),
                 "id": input_.get("id", ""),
             })
         result["results"] = results

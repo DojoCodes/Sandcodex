@@ -138,7 +138,7 @@ components:
             properties:
               id:
                 type: string
-              return:
+              output:
                 type: string
 
     TaskRequest:
