@@ -7,6 +7,8 @@ from celery.utils.log import get_task_logger
 from celery import Celery
 import docker
 import requests
+import time
+
 
 logger = get_task_logger(__name__)
 
@@ -50,9 +52,13 @@ def get_result(self, interpreter: str, code: str, inputs: List[Dict[str, Any]], 
         container = worker.new_container()
         results = []
         for input_ in inputs:
+            before_time = time.time()
+            output = container.exec(code, input_.get("parameters", []), input_.get("stdin", ""))
+            delta_time = time.time() - before_time
             results.append({
-                "output": container.exec(code, input_.get("parameters", []), input_.get("stdin", "")),
+                "output": output,
                 "id": input_.get("id", ""),
+                "executionTime": round(delta_time, 4)
             })
         result["results"] = results
         update_status(self, state="SUCCESS", result=result, callback=callback)
