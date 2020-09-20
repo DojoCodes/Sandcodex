@@ -160,7 +160,7 @@ components:
               id:
                 type: string
               parameters:
-                type: string
+                type: array
               stdin:
                 type: string
         callback:
