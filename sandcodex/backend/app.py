@@ -65,12 +65,13 @@ def get_result(
         results = []
         for input_ in inputs:
             before_time = time.time()
-            logger.info("")
+            input_files = {**attachments, **input_.get("files", {})}
+            logger.info(f"Input files : {input_files}")
             output = container.exec(
                 code,
                 input_.get("parameters", []),
                 input_.get("stdin", ""),
-                {**attachments, **input_.get("files", {})},
+                input_files,
             )
             delta_time = time.time() - before_time
             results.append(
