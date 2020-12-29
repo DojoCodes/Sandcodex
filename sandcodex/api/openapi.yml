@@ -169,6 +169,10 @@ components:
                   type: string
               stdin:
                 type: string
+              files:
+                type: object
+                additionalProperties:
+                  type: string
         callback:
           type: object
           properties:
