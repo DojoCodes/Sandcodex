@@ -66,7 +66,6 @@ def get_result(
         for input_ in inputs:
             before_time = time.time()
             input_files = {**attachments, **input_.get("files", {})}
-            logger.info(f"Input files : {input_files}")
             output = container.exec(
                 code,
                 input_.get("parameters", []),
@@ -79,7 +78,6 @@ def get_result(
                     "output": output,
                     "id": input_.get("id", ""),
                     "executionTime": round(delta_time, 4),
-                    "inputsFiles": input_files,
                 }
             )
         result["results"] = results
