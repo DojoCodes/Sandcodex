@@ -29,7 +29,8 @@ def post_tasks(body):
         interpreter=body.get('interpreter'),
         code=body.get('code'),
         inputs=body.get("inputs", []),
-        callback=body.get('callback', None))
+        callback=body.get('callback', None),
+        attachments=body.get("attachments", {}))
     return {
         "id": task.id,
         "status": task.state,

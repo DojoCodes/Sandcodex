@@ -176,6 +176,10 @@ components:
               type: string
             bearer:
               type: string
+        attachments:
+          type: object
+          additionalProperties:
+            type: string
 
     InterpreterList:
       type: object

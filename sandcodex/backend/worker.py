@@ -3,8 +3,9 @@ from sandcodex.backend.utils import text_to_tar_stream
 
 
 class Worker:
-
-    def __init__(self, image: str, command: str, client: docker.client.DockerClient = None):
+    def __init__(
+        self, image: str, command: str, client: docker.client.DockerClient = None
+    ):
         self._client = client
         self.image = image
         self.command = command
@@ -20,7 +21,6 @@ class Worker:
 
 
 class Container:
-
     def __init__(self, client: docker.client.DockerClient, image: str, command: str):
         self.client = client
         self.image = image
@@ -29,21 +29,24 @@ class Container:
             image=self.image, detach=True, network_mode="none", stdin_open=True
         )
 
-    def exec(self, code, parameters, input_):
-        command = self.command.format(
-            parameters=" ".join(parameters)
-        )
+    def exec(self, code, parameters, input_, attachments):
+        command = self.command.format(parameters=" ".join(parameters))
         tar_stream = text_to_tar_stream(code, name="code.py")
-        self.container.put_archive(
-            path=f"/home/worker", data=tar_stream
+        self.container.put_archive(path=f"/home/worker", data=tar_stream)
+
+        for attachment_name, attachment_content in attachments.items():
+            tar_stream = text_to_tar_stream(attachment_content, name=attachment_name)
+            self.container.put_archive(path=f"/home/worker", data=tar_stream)
+        _, stream = self.container.exec_run(
+            command, socket=True, stdin=True, stdout=True, stderr=True
         )
-        _, stream = self.container.exec_run(command, socket=True, stdin=True, stdout=True, stderr=True)
         ret = ""
-        stream._sock.send(input_.encode('utf8'))
+        stream._sock.send(input_.encode("utf8"))
         while True:
             data = stream._sock.recv(1024)
-            if not data: break
-            ret += data[8:].decode('utf8')
+            if not data:
+                break
+            ret += data[8:].decode("utf8")
         return ret
 
     @property

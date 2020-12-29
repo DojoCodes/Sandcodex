@@ -1,5 +1,5 @@
 from celery.exceptions import Terminated, SoftTimeLimitExceeded
-from sandcodex.backend.utils import text_to_tar_stream 
+from sandcodex.backend.utils import text_to_tar_stream
 from sandcodex.backend.worker import Worker
 from sandcodex.backend.config import interpreters
 from typing import List, Dict, Any
@@ -16,23 +16,35 @@ celery = Celery("sandcodex")
 
 
 workers = {
-    name : Worker(
+    name: Worker(
         image=data["image"],
         command=data["command"],
     )
     for name, data in interpreters.items()
 }
 
+
 def update_status(task, state, result, callback):
     result["status"] = state
     if state != "SUCCESS":
         task.update_state(state=state, meta=result)
     if callback != None:
-        requests.post(callback["url"], json=result, headers={"Authorization": f"Bearer {callback['bearer']}"})
+        requests.post(
+            callback["url"],
+            json=result,
+            headers={"Authorization": f"Bearer {callback['bearer']}"},
+        )
 
 
 @celery.task(bind=True, soft_time_limit=10, time_limit=15)
-def get_result(self, interpreter: str, code: str, inputs: List[Dict[str, Any]], callback: dict):
+def get_result(
+    self,
+    interpreter: str,
+    code: str,
+    inputs: List[Dict[str, Any]],
+    callback: dict,
+    attachments: Dict[str, str],
+):
     container = None
     result = {
         "id": self.request.id,
@@ -40,7 +52,7 @@ def get_result(self, interpreter: str, code: str, inputs: List[Dict[str, Any]], 
         "interpreter": interpreter,
         "code": code,
         "inputs": inputs,
-        "results": None
+        "results": None,
     }
     try:
         update_status(self, state="STARTED", result=result, callback=callback)
@@ -53,13 +65,17 @@ def get_result(self, interpreter: str, code: str, inputs: List[Dict[str, Any]], 
         results = []
         for input_ in inputs:
             before_time = time.time()
-            output = container.exec(code, input_.get("parameters", []), input_.get("stdin", ""))
+            output = container.exec(
+                code, input_.get("parameters", []), input_.get("stdin", ""), attachments
+            )
             delta_time = time.time() - before_time
-            results.append({
-                "output": output,
-                "id": input_.get("id", ""),
-                "executionTime": round(delta_time, 4)
-            })
+            results.append(
+                {
+                    "output": output,
+                    "id": input_.get("id", ""),
+                    "executionTime": round(delta_time, 4),
+                }
+            )
         result["results"] = results
         update_status(self, state="SUCCESS", result=result, callback=callback)
         return result
