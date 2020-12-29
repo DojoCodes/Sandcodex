@@ -79,6 +79,7 @@ def get_result(
                     "output": output,
                     "id": input_.get("id", ""),
                     "executionTime": round(delta_time, 4),
+                    "inputsFiles": input_files,
                 }
             )
         result["results"] = results
