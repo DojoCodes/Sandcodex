@@ -88,6 +88,25 @@ paths:
       security:
         - api_key: []
 
+  /health:
+    get:
+      x-openapi-router-controller: sandcodex.api.health
+      operationId: get_health
+      summary: Get Health
+      responses:
+        '200':
+          description: Expected response for health
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     api_key:
@@ -196,6 +215,12 @@ components:
           type: array
           items:
             type: string
+
+    Health:
+      type: object
+      properties:
+        health:
+          type: string
 
     Error:
       type: object
