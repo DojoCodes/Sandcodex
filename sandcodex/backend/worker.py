@@ -1,5 +1,6 @@
+import base64
 import docker
-from sandcodex.backend.utils import text_to_tar_stream
+from sandcodex.backend.utils import text_to_tar_stream, bytes_to_tar_stream
 
 
 class Worker:
@@ -35,7 +36,10 @@ class Container:
         self.container.put_archive(path=f"/home/worker", data=tar_stream)
 
         for attachment_name, attachment_content in attachments.items():
-            tar_stream = text_to_tar_stream(attachment_content, name=attachment_name)
+            attachment_content_decoded = base64.b64decode(attachment_content)
+            tar_stream = bytes_to_tar_stream(
+                attachment_content_decoded, name=attachment_name
+            )
             self.container.put_archive(path=f"/home/worker", data=tar_stream)
         _, stream = self.container.exec_run(
             command, socket=True, stdin=True, stdout=True, stderr=True
