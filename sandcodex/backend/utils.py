@@ -15,3 +15,15 @@ def text_to_tar_stream(text: str, name: str):
     tar.close()
     tar_stream.seek(0)
     return tar_stream
+
+
+def bytes_to_tar_stream(content: bytes, name: str):
+    tar_stream = BytesIO()
+    tar = tarfile.TarFile(fileobj=tar_stream, mode="wb")
+    tarinfo = tarfile.TarInfo(name=name)
+    tarinfo.size = len(content)
+    tarinfo.mtime = time.time()
+    tar.addfile(tarinfo, BytesIO(content))
+    tar.close()
+    tar_stream.seek(0)
+    return tar_stream
