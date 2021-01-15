@@ -9,7 +9,7 @@ info:
 
 
 servers:
-  - url: https://api.sandcodex.ted.mk/v0
+  - url: https://sandbox.dojo.codes/v0
 
 
 paths:

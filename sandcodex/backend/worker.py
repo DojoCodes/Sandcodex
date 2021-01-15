@@ -40,6 +40,7 @@ class Container:
         self.container.put_archive(path=f"/home/worker", data=tar_stream)
 
         for attachment_name, attachment_content in attachments.items():
+            print("Attachment content", attachment_content)
             attachment_content_decoded = base64.b64decode(attachment_content)
             tar_stream = bytes_to_tar_stream(
                 attachment_content_decoded, name=attachment_name

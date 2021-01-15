@@ -19,8 +19,8 @@ def text_to_tar_stream(text: str, name: str):
 
 def bytes_to_tar_stream(content: bytes, name: str):
     tar_stream = BytesIO()
-    tar = tarfile.TarFile(fileobj=tar_stream, mode="wb")
-    print("Encoding binary file", list(content))
+    tar = tarfile.TarFile(fileobj=tar_stream, mode="w")
+    print(f"Encoding binary file {list(content)}")
     tarinfo = tarfile.TarInfo(name=name)
     tarinfo.size = len(content)
     tarinfo.mtime = time.time()
