@@ -144,6 +144,10 @@ components:
                 type: string
               executionTime:
                 type: number
+              files:
+                type: object
+                additionalProperties:
+                  type: string
 
     TaskRequest:
       type: object

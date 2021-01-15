@@ -30,6 +30,10 @@ class Container:
         )
 
     def exec(self, code, parameters, input_, attachments):
+        print("Executing following task")
+        print(f"  - Code : {code}")
+        print(f"  - Parameters : {parameters}")
+        print(f"  - Attachments : {attachments}")
         command = self.command.format(parameters=" ".join(parameters))
         tar_stream = text_to_tar_stream(code, name="code.py")
         self.container.put_archive(path=f"/home/worker", data=tar_stream)
